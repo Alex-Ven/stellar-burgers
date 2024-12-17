@@ -1,3 +1,3 @@
 export type OrderStatusProps = {
-  status: string;
+  status: 'pending' | 'done' | 'created' | string; // Если есть неизвестные статусы
 };
