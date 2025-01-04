@@ -1,36 +1,86 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
-import { BurgerConstructorUI } from '@ui';
+import { BurgerConstructorUI, Preloader } from '@ui';
+import { useSelector, useDispatch } from '../../services/store';
+import {
+  resetConstructor,
+  selectBun,
+  selectIngredients,
+  selectOrderRequest,
+  selectOrderModalData,
+  takeOrder
+} from '../../services/slices/burger/burgerSlice';
+import { useNavigate } from 'react-router-dom';
+import {
+  checkUserAuth,
+  selectError,
+  selectIsAuth,
+  selectIsAuthChecked,
+  selectIsLoading
+} from '../../services/slices/user/userSlice';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
+  const constructorBun = useSelector(selectBun); // Получаем булочку
+  const constructorIngredients = useSelector(selectIngredients); // Получаем ингредиенты
+  const orderRequest = useSelector(selectOrderRequest); // Исправил опечатку в селекторе
+  const orderModalData = useSelector(selectOrderModalData);
+  const isAuth = useSelector(selectIsAuth);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
+
+  // Проверяем, авторизован ли пользователь
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Проверяем аутентификацию при монтировании компонента
+  useEffect(() => {
+    if (!isAuthChecked) {
+      dispatch(checkUserAuth()); // Проверяем аутентификацию пользователя
+    }
+  }, [dispatch, isAuthChecked]);
+
+  // Собираем все данные конструктора в один объект
   const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
+    bun: constructorBun,
+    ingredients: constructorIngredients || [] // Убедимся, что ингредиенты всегда массив
   };
 
-  const orderRequest = false;
-
-  const orderModalData = null;
-
+  // Логика клика по кнопке оформления заказа
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
+    if (!isAuth) {
+      return navigate('/login', { state: { from: window.location.pathname } }); // Если не авторизован, перенаправляем на страницу входа
+    }
+    if (!constructorItems.bun || orderRequest) return; // Если нет булочки или заказ уже в процессе, ничего не делаем
+
+    // Формируем массив заказов
+    const order = [
+      constructorItems.bun?._id, // Добавляем булочку (только один раз)
+      ...constructorItems.ingredients.map((ingredient) => ingredient._id), // Добавляем все ингредиенты
+      constructorItems.bun?._id // Добавляем булочку в конце, если нужно
+    ].filter(Boolean); // Очищаем массив от пустых значений (null, undefined)
+
+    dispatch(takeOrder(order)); // Диспатчим заказ в Redux
   };
-  const closeOrderModal = () => {};
 
-  const price = useMemo(
-    () =>
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
+  // Закрытие модального окна с заказом
+  const closeOrderModal = () => {
+    dispatch(resetConstructor()); // Сбрасываем состояние конструктора
+    navigate('/'); // Перенаправляем на главную страницу или другую нужную
+  };
+
+  // Рассчитываем цену с использованием useMemo для оптимизации
+  const price = useMemo(() => {
+    if (!constructorItems.bun || !constructorItems.ingredients) {
+      return 0; // Если нет булочки или ингредиентов, возвращаем 0
+    }
+    return (
+      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) + // Цена булочки (умножаем на 2)
       constructorItems.ingredients.reduce(
-        (s: number, v: TConstructorIngredient) => s + v.price,
-        0
-      ),
-    [constructorItems]
-  );
-
-  return null;
+        (total: number, ingredient: TConstructorIngredient) =>
+          total + ingredient.price,
+        0 // Складываем все цены ингредиентов
+      )
+    );
+  }, [constructorItems]); // Перерасчет будет происходить только при изменении конструктора
 
   return (
     <BurgerConstructorUI

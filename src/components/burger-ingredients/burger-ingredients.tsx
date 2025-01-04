@@ -1,15 +1,42 @@
-import { useState, useRef, useEffect, FC } from 'react';
+import { useState, useRef, useEffect, FC, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import {
+  selectIngredients,
+  selectLoading
+} from '../../services/slices/ingredients/ingredientsSlice';
+
+import { useSelector } from 'react-redux';
+import { Preloader } from '@ui';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  // Получаем ингредиенты и состояние загрузки.
+  const ingredients = useSelector(selectIngredients);
+  const isLoading = useSelector(selectLoading);
+  if (isLoading) {
+    return <Preloader />;
+  }
 
+  // Ингредиенты фильтруются по типу, что позволяет разбить их на булки, начинки и соусы.
+  // Используем useMemo для мемоизации отфильтрованных массивов (buns, mains, sauces), чтобы избежать повторной фильтрации при каждом рендере.
+
+  const buns = useMemo(
+    () => ingredients.filter((item) => item.type === 'bun'),
+    [ingredients]
+  );
+  const mains = useMemo(
+    () => ingredients.filter((item) => item.type === 'main'),
+    [ingredients]
+  );
+  const sauces = useMemo(
+    () => ingredients.filter((item) => item.type === 'sauce'),
+    [ingredients]
+  );
+
+  // Ссылки на заголовки секций создаются с помощью useRef, а видимость секций отслеживается с помощью useInView.
+  //Это позволяет устанавливать активную вкладку в зависимости от видимости секции.
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
@@ -37,6 +64,7 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
+  // Функция onTabClick изменяет текущую вкладку и прокручивает к соответствующей секции.
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
     if (tab === 'bun')
@@ -47,8 +75,7 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return null;
-
+  // Компонент возвращает BurgerIngredientsUI, передавая все необходимые данные и функции.
   return (
     <BurgerIngredientsUI
       currentTab={currentTab}
