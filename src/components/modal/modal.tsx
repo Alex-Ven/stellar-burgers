@@ -29,7 +29,7 @@ export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
   if (!modalRoot) return null;
 
   return ReactDOM.createPortal(
-    <ModalUI title={title} onClose={onClose}>
+    <ModalUI title={title} onClose={onClose} data-cy='modal-window'>
       {children}
     </ModalUI>,
     modalRoot // Монтируем модальное окно в найденный элемент

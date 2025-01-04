@@ -22,9 +22,12 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   const { bun, ingredients } = useSelector(selectConstructorItems);
 
   return (
-    <section className={styles.burger_constructor}>
+    <section className={styles.burger_constructor} data-cy='burger_constructor'>
       {bun ? (
-        <div className={`${styles.element} mb-4 mr-4`}>
+        <div
+          className={`${styles.element} mb-4 mr-4`}
+          data-cy='top_bun_constructor'
+        >
           <ConstructorElement
             type='top'
             isLocked
@@ -36,11 +39,12 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       ) : (
         <div
           className={`${styles.noBuns} ${styles.noBunsTop} ml-8 mb-4 mr-5 text text_type_main-default`}
+          data-cy='top_bun_placeholder'
         >
           Выберите булки
         </div>
       )}
-      <ul className={styles.elements}>
+      <ul className={styles.elements} data-cy='ingredient_list_constructor'>
         {ingredients.length > 0 ? (
           ingredients.map((item: TConstructorIngredient, index: number) => (
             <BurgerConstructorElement
@@ -53,13 +57,17 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         ) : (
           <div
             className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
+            data-cy='ingredient_placeholder'
           >
             Выберите начинку
           </div>
         )}
       </ul>
       {bun ? (
-        <div className={`${styles.element} mt-4 mr-4`}>
+        <div
+          className={`${styles.element} mt-4 mr-4`}
+          data-cy='bottom_bun_constructor'
+        >
           <ConstructorElement
             type='bottom'
             isLocked
@@ -71,11 +79,12 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
       ) : (
         <div
           className={`${styles.noBuns} ${styles.noBunsBottom} ml-8 mb-4 mr-5 text text_type_main-default`}
+          data-cy='bottom_bun_placeholder'
         >
           Выберите булки
         </div>
       )}
-      <div className={`${styles.total} mt-10 mr-4`}>
+      <div className={`${styles.total} mt-10 mr-4`} data-cy='order_button'>
         <div className={`${styles.cost} mr-10`}>
           <p className={`text ${styles.text} mr-2`}>{price}</p>
           <CurrencyIcon type='primary' />

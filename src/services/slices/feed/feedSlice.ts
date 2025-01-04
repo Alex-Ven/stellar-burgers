@@ -7,7 +7,7 @@ import {
 } from '../../../utils/burger-api';
 import { RootState } from '../../store';
 
-interface FeedState {
+export interface FeedState {
   orders: TOrder[];
   selectedModalOrder: TOrder | null;
   total: number;

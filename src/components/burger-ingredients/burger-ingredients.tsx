@@ -75,6 +75,10 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    console.log('BurgerIngredients отрендерен');
+  }, []);
+
   // Компонент возвращает BurgerIngredientsUI, передавая все необходимые данные и функции.
   return (
     <BurgerIngredientsUI

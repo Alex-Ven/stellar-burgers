@@ -10,7 +10,7 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   burgerconstructor: constructorReducer, // Добавляем редьюсер конструктора
   feed: feedReducer, // Добавляем редьюсер данных
   user: userReducer, // Добавляем редьюсер пользователя

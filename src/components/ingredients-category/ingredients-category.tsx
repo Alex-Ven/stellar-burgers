@@ -9,7 +9,7 @@ import { selectConstructorItems } from '../../services/slices/burger/burgerSlice
 export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
->(({ title, titleRef, ingredients }, ref) => {
+>(({ title, titleRef, ingredients, ...rest }, ref) => {
   // Получаем данные конструктора
   const { bun, ingredients: constructorIngredients } = useSelector(
     selectConstructorItems
@@ -39,6 +39,8 @@ export const IngredientsCategory = forwardRef<
       ingredients={ingredients}
       ingredientsCounters={ingredientsCounters}
       ref={ref}
+      {...rest}
+      //data-cy={`ingredients-category-${title.toLowerCase()}`}
     />
   );
 });
