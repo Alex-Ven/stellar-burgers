@@ -1,5 +1,6 @@
 import ingredientsReducer, {
-  fetchIngredients
+  fetchIngredients,
+  initialState
 } from '../slices/ingredients/ingredientsSlice';
 import { TIngredient } from '@utils-types'; // Импортируем тип TIngredient
 
@@ -44,13 +45,6 @@ const vegetableIngredient: TIngredient = {
   image: 'image_url',
   image_large: 'image_large_url',
   image_mobile: 'image_mobile_url'
-};
-
-// Инициализация состояния
-const initialState = {
-  items: [],
-  loading: false,
-  error: null
 };
 
 describe('Ingredients slice tests', () => {

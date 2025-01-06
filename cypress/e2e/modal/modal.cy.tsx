@@ -1,6 +1,12 @@
 ///<reference types="cypress"/>
 
 describe('Modal window test', function () {
+  // Константы для селекторов
+  const modalWindowSelector = '[data-cy=modal-window]';
+  const modalCloseBtnSelector = '[data-cy=modal-close-btn]';
+  const modalOverlaySelector = '[data-cy=modal-overlay]';
+  const ingredientsBunSelector = '[data-cy=ingredients_bun]';
+  
   // Настройка перед каждым тестом
   beforeEach(function() {
     // Мокаем запрос на получение ингредиентов
@@ -9,31 +15,31 @@ describe('Modal window test', function () {
     }).as('getIngredients');
     
     // Переходим на страницу
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
     
     // Ожидаем, что запрос на получение ингредиентов завершится
     cy.wait('@getIngredients');
   });
 
-  //открытие модального окна при клике на ингредиент в списке 
+  // Открытие модального окна при клике на ингредиент в списке 
   it('Ingredient modal window is opened', function () {
-      cy.get('[data-cy=modal-window]').should('not.exist');
-      cy.get('[data-cy=ingredients_bun]').contains('Булка с кунжутом').click();
-      cy.get('[data-cy=modal-window]').contains('Булка с кунжутом').should('exist');
+      cy.get(modalWindowSelector).should('not.exist');
+      cy.get(ingredientsBunSelector).contains('Булка с кунжутом').click();
+      cy.get(modalWindowSelector).contains('Булка с кунжутом').should('exist');
   })
 
-  //закрытие модального окна при клике на крестик
+  // Закрытие модального окна при клике на крестик
   it('Ingredient modal window is closed by close btn', function() {
-      cy.get('[data-cy=ingredients_bun]').contains('Булка с кунжутом').click();
-      cy.get('[data-cy=modal-close-btn]').click();
-      cy.get('[data-cy=modal-window]').should('not.exist');
+      cy.get(ingredientsBunSelector).contains('Булка с кунжутом').click();
+      cy.get(modalCloseBtnSelector).click();
+      cy.get(modalWindowSelector).should('not.exist');
   })
 
-  //закрытие модального окна при клике на оверлей
+  // Закрытие модального окна при клике на оверлей
   it('Ingredient modal window is closed by overlay click', function () {
-      cy.get('[data-cy=ingredients_bun]').contains('Булка с кунжутом').click();
-      cy.get('[data-cy=modal-window]').should('exist');
-      cy.get('[data-cy=modal-overlay]').should('exist').click('topRight', {force : true});
-      cy.get('[data-cy=modal-window]').should('not.exist');
+      cy.get(ingredientsBunSelector).contains('Булка с кунжутом').click();
+      cy.get(modalWindowSelector).should('exist');
+      cy.get(modalOverlaySelector).should('exist').click('topRight', {force : true});
+      cy.get(modalWindowSelector).should('not.exist');
   })
 })

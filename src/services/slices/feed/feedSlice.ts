@@ -16,7 +16,7 @@ export interface FeedState {
   error: string | null;
 }
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   orders: [],
   selectedModalOrder: null,
   total: 0,

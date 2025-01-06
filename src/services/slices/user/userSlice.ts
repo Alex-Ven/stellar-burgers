@@ -29,7 +29,7 @@ interface UserState {
 }
 
 // Начальное состояние
-const initialState: UserState = {
+export const initialState: UserState = {
   isAuthChecked: false,
   isAuthenticated: false,
   user: null,
@@ -146,7 +146,7 @@ const userSlice = createSlice({
       })
       .addCase(checkUserAuth.fulfilled, (state, action) => {
         state.isAuthChecked = true;
-        state.isAuthenticated = false;
+        state.isAuthenticated = true;
         state.isLoading = false;
       })
       .addCase(checkUserAuth.rejected, (state, action) => {

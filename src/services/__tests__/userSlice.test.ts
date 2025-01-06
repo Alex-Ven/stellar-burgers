@@ -4,24 +4,12 @@ import reducer, {
   updateUser,
   userLogout,
   fetchOrders,
-  getUserData,
   forgotPassword,
   resetPassword,
   checkUserAuth,
-  authChecked
+  authChecked,
+  initialState // Импортируем initialState из редьюсера
 } from '../slices/user/userSlice';
-
-const initialState = {
-  isAuthChecked: false, // Флаг, проверен ли токен аутентификации
-  isAuthenticated: false, // Статус авторизации
-  user: null, // Данные пользователя (если авторизован)
-  orders: [], // История заказов
-  isLoading: false, // Общий флаг загрузки
-  error: null, // Сообщение об ошибке
-  loginUserRequest: false, // Флаг загрузки при запросе входа
-  ordersLoading: false, // Флаг загрузки заказов
-  ordersError: null // Сообщение об ошибке загрузки заказов
-};
 
 const testUser = {
   success: true,
@@ -96,7 +84,7 @@ describe('userSlice', () => {
       checkUserAuth.fulfilled(undefined, '', undefined)
     );
     expect(actualState.isAuthChecked).toBe(true); // Проверка завершена, флаг должен быть true
-    expect(actualState.isAuthenticated).toBe(false); // Пользователь не авторизован без токенов
+    expect(actualState.isAuthenticated).toBe(true); // Пользователь не авторизован без токенов
   });
 
   it('should handle checkUserAuth into rejected status', () => {

@@ -20,7 +20,7 @@ interface ConstructorState {
 }
 
 // Начальное состояние
-const initialState: ConstructorState = {
+export const initialState: ConstructorState = {
   bun: null,
   ingredients: [],
   orderRequest: false,

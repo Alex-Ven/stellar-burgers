@@ -1,21 +1,10 @@
-import { error } from 'console';
 import reducer, {
   fetchFeedsData,
   fetchOrderByNumber,
-  FeedState
+  initialState
 } from '../slices/feed/feedSlice';
 
-// Начальное состояние для тестов, вынесенное в глобальную переменную для общего доступа
-const initialState: FeedState = {
-  orders: [],
-  selectedModalOrder: null,
-  total: 0,
-  totalToday: 0,
-  isLoading: false,
-  error: null
-};
-
-// Тестовые данные заказов для использования в тестах, в глобальной переменной для общего доступа
+// Тестовые данные заказов для использования в тестах
 const testFeeds = {
   success: true,
   orders: [
@@ -136,7 +125,7 @@ describe('Feeds slice tests', () => {
         ...initialState,
         error: 'Ошибка получения заказов'
       },
-      fetchOrderByNumber.pending('1', 1) // Аргументы (номер заказа и идентификатор запроса) не используются непосредственно в тесте, но необходимы для соответствия сигнатуре запроса
+      fetchOrderByNumber.pending('1', 1) // Аргументы (номер заказа и идентификатор запроса) не используются непосредственно в тесте
     );
     expect(actualState).toEqual({
       orders: [],

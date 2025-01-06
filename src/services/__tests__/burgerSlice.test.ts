@@ -1,8 +1,9 @@
 import reducer, {
   addIngredient,
   removeIngredient,
-  moveIngredient
-} from '../slices/burger/burgerSlice';
+  moveIngredient,
+  initialState
+} from '../slices/burger/burgerSlice'; // Импортируем редуктор и начальный стейт
 import { TConstructorIngredient } from '@utils-types';
 
 // Объявление переменных ингредиентов
@@ -37,14 +38,14 @@ const lettuce: TConstructorIngredient = {
 };
 
 const burgerBun: TConstructorIngredient = {
-  _id: '2',
+  _id: '3',
   type: 'bun',
   name: 'Sesame Bun',
   price: 100,
   image: 'bun_image_url',
   image_large: 'bun_image_large_url',
   image_mobile: 'bun_image_mobile_url',
-  id: '2_1234567890',
+  id: '3_1234567890',
   proteins: 10,
   fat: 5,
   carbohydrates: 30,
@@ -66,41 +67,21 @@ const sauceIngredient: TConstructorIngredient = {
   calories: 40
 };
 
-describe('burgerSlice test', () => {
-  let initialState: {
-    bun: null | TConstructorIngredient;
-    ingredients: TConstructorIngredient[];
-    orderRequest: boolean;
-    orderModalData: null | any;
-    loading: boolean;
-    error: null | string;
-  };
-
-  beforeEach(() => {
-    initialState = {
-      bun: null,
-      ingredients: [],
-      orderRequest: false,
-      orderModalData: null,
-      loading: true,
-      error: null
-    };
-  });
-
-  jest.spyOn(Date, 'now').mockReturnValue(1234567890); // Мокаем Date.now() для получения фиксированного значения
+describe('burgerSlice tests', () => {
+  jest.spyOn(Date, 'now').mockReturnValue(1234567890); // Мокаем Date.now() для фиксированного значения
 
   it('should add an ingredient to the constructor', () => {
-    const state = reducer(initialState, addIngredient(sauceIngredient)); // Используем импортированный редуктор
+    const state = reducer(initialState, addIngredient(sauceIngredient)); // Используем импортированный начальный стейт
 
     expect(state.ingredients).toHaveLength(1);
     expect(state.ingredients[0]).toEqual(sauceIngredient);
   });
 
   it('should replace the bun when a bun ingredient is added', () => {
-    const state = reducer(initialState, addIngredient(burgerBun)); // Используем импортированный редуктор
+    const state = reducer(initialState, addIngredient(burgerBun)); // Используем импортированный начальный стейт
 
     expect(state.bun).toEqual(burgerBun);
-    expect(state.ingredients).toHaveLength(0);
+    expect(state.ingredients).toHaveLength(0); // После добавления булки список ингредиентов должен быть пустым
   });
 
   it('should remove an ingredient by ID', () => {
