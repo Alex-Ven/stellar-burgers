@@ -29,7 +29,7 @@ interface UserState {
 }
 
 // Начальное состояние
-const initialState: UserState = {
+export const initialState: UserState = {
   isAuthChecked: false,
   isAuthenticated: false,
   user: null,
@@ -142,12 +142,15 @@ const userSlice = createSlice({
         state.isAuthenticated = false;
         state.isLoading = true;
         state.error = null;
+        state.isAuthChecked = false;
       })
       .addCase(checkUserAuth.fulfilled, (state, action) => {
+        state.isAuthChecked = true;
         state.isAuthenticated = true;
         state.isLoading = false;
       })
       .addCase(checkUserAuth.rejected, (state, action) => {
+        state.isAuthChecked = true;
         state.isAuthenticated = false;
         state.isLoading = false;
         state.error =
@@ -158,6 +161,7 @@ const userSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loginUserRequest = true;
         state.error = null;
+        state.isAuthChecked = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
@@ -166,9 +170,10 @@ const userSlice = createSlice({
         state.loginUserRequest = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Ошибка входа';
+        state.error = action.error.message || 'Ошибка входа';
         state.loginUserRequest = false;
         state.isAuthChecked = true;
+        state.isAuthenticated = false;
       })
 
       // Получение данных пользователя
@@ -206,31 +211,25 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = true;
         state.user = action.payload;
-        state.loginUserRequest = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = false;
-        state.loginUserRequest = false;
         state.error = action.error.message || 'Ошибка регистрации';
       })
 
       // Обновление данных пользователя
       .addCase(updateUser.pending, (state) => {
-        state.isAuthenticated = true;
         state.loginUserRequest = true;
         state.isLoading = true;
         state.error = null;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = true;
-        state.loginUserRequest = false;
         state.user = { ...state.user, ...action.payload }; // Обновляем только измененные поля
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.loginUserRequest = false;
         state.error = action.error.message || 'Ошибка обновления данных';
       })
 

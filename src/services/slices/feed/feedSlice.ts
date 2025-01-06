@@ -7,7 +7,7 @@ import {
 } from '../../../utils/burger-api';
 import { RootState } from '../../store';
 
-interface FeedState {
+export interface FeedState {
   orders: TOrder[];
   selectedModalOrder: TOrder | null;
   total: number;
@@ -16,7 +16,7 @@ interface FeedState {
   error: string | null;
 }
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   orders: [],
   selectedModalOrder: null,
   total: 0,
